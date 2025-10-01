@@ -7,14 +7,14 @@ dotenv.config();
 // تهيئة Firebase Admin SDK
 // تأكد من أن لديك ملف serviceAccountKey.json في جذر المشروع
 // أو قم بتعيين متغيرات البيئة المناسبة لـ Google Cloud Credentials
-try {
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+  const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
   admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
+    credential: admin.credential.cert(serviceAccount),
   });
-} catch (error) {
-  console.error("Firebase admin initialization error", error);
-  // إذا فشلت التهيئة التلقائية، حاول استخدام serviceAccountKey.json
-  // تأكد من وجود ملف serviceAccountKey.json في جذر المشروع
+} else {
+  // تهيئة Firebase Admin SDK من ملف serviceAccountKey.json المحلي (للتطوير)
+  // تأكد من أن لديك ملف serviceAccountKey.json في جذر المشروع
   const serviceAccount = require("./serviceAccountKey.json");
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
