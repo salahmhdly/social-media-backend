@@ -1,0 +1,54 @@
+const express = require("express");
+const admin = require("firebase-admin");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+// تهيئة Firebase Admin SDK
+// تأكد من أن لديك ملف serviceAccountKey.json في جذر المشروع
+// أو قم بتعيين متغيرات البيئة المناسبة لـ Google Cloud Credentials
+try {
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+  });
+} catch (error) {
+  console.error("Firebase admin initialization error", error);
+  // إذا فشلت التهيئة التلقائية، حاول استخدام serviceAccountKey.json
+  // تأكد من وجود ملف serviceAccountKey.json في جذر المشروع
+  const serviceAccount = require("./serviceAccountKey.json");
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+const db = admin.firestore();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
+app.use(express.json()); // لتحليل طلبات JSON
+
+const postRoutes = require("./routes/postRoutes");
+
+// تعريف المسارات
+app.use("/api", postRoutes);
+// app.use("/api/users", userRoutes);
+// app.use("/api/notifications", notificationRoutes);
+
+app.get("/", (req, res) => {
+  res.send("Social Media Backend API is running!");
+});
+
+// معالج الأخطاء العام (يجب أن يكون في النهاية)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+module.exports = { db, admin };
+
