@@ -1,0 +1,5 @@
+node_modules/
+cloud-functions/node_modules/
+.env
+serviceAccountKey.json
+
