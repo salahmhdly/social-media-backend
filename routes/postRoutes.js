@@ -10,19 +10,19 @@ const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 
 // إنشاء منشور جديد (مع دعم رفع الملفات)
-router.post("/posts", authMiddleware, upload.single("media"), postController.createPost);
+router.post("/posts", upload.single("media"), postController.createPost);
 
 // جلب المنشورات لصفحة "آخر الأخبار"
-router.get("/feed", authMiddleware, postController.getFeedPosts);
+router.get("/feed", postController.getFeedPosts);
 
 // الإعجاب بمنشور
-router.post("/posts/:postId/like", authMiddleware, postController.likePost);
+router.post("/posts/:postId/like", postController.likePost);
 
 // إضافة تعليق على منشور
-router.post("/posts/:postId/comments", authMiddleware, postController.addComment);
+router.post("/posts/:postId/comments", postController.addComment);
 
 // إضافة رد على تعليق
-router.post("/comments/:commentId/replies", authMiddleware, postController.addReply);
+router.post("/comments/:commentId/replies", postController.addReply);
 
 module.exports = router;
 

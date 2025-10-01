@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const admin = require("firebase-admin");
 const dotenv = require("dotenv");
 
@@ -28,6 +29,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(express.json()); // لتحليل طلبات JSON
+app.use(cors()); // تمكين CORS للوصول من أي نطاق
 
 const postRoutes = require("./routes/postRoutes");
 
